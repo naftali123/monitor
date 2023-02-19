@@ -49,7 +49,7 @@ export class MonitorService {
     return cloneDeep(urls[index].activityHistory);
   }
 
-  // It will also send a notification to the user (email, sms, etc) about the subscription
+  //TODO: It will also send a notification to the user (email, sms, etc) about the subscription
   subscribeToUrl({ url, label, frequency = 1 }: SubscribeToUrl): void {
     console.log('subscribeToUrl');
     const foundToProceed = this.toProceed.some((urlObj) => urlObj.url === url);
@@ -93,7 +93,7 @@ export class MonitorService {
   }
 
   // Will remove the url from the list of urls
-  // It will also send a notification to the user (email, sms, etc) about the unsubscription
+  //TODO: It will also send a notification to the user (email, sms, etc) about the unsubscription
   unsubscribeFromUrl(url: string): void {
     console.log('unsubscribeFromUrl');
    
@@ -123,7 +123,7 @@ export class MonitorService {
 
   // It will check the list of urls
   // If the url is not responding, it will store the reason (if is there some information about the reason) in local class data structure
-  // It will also send a notification to the user (email, sms, etc) about the problem with the url (if the user is subscribed to the url)
+  //TODO: It will also send a notification to the user (email, sms, etc) about the problem with the url (if the user is subscribed to the url)
   checkUrls(): void {
     console.log('checkUrls');
     this.toProceed.forEach((urlObj) => {
