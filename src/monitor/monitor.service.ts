@@ -24,8 +24,8 @@ export class MonitorService {
     this.startMonitoring();  
   }
 
-  getUrls(): Url[] {
-    console.log('getUrls');
+  getAllSubscriptions(): Url[] {
+    console.log('getSubscriptions');
     return cloneDeep(this.urls());
   }
 

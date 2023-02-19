@@ -49,9 +49,9 @@ export class MonitorController {
     return this.monitorService.unsubscribeToTags(tags);
   }
 
-  @Get('urls')
-  getUrls() {
-    return this.monitorService.getUrls();
+  @Get('all-subscriptions')
+  getAllSubscriptions() {
+    return this.monitorService.getAllSubscriptions();
   }
 
   @Get('urls/active')
