@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Url } from 'src/url/url.model';
 import { MonitorService } from './monitor.service';
-import { SubscribeToUrl } from './types';
+import { AddUrlRequest } from './types';
 
 @Controller('monitor')
 export class MonitorController {
@@ -9,64 +10,74 @@ export class MonitorController {
   // @Get()
   // sendOk(): string { return this.monitorService.sendOk(); }
 
-  @Post('subscribe')
-  subscribeToUrl(
-    @Body() subscribeToUrl: SubscribeToUrl
+  urlWrapper(url: Url | string ): Url | string | Error {
+    if(url instanceof Error) {
+      return url.message;
+    }
+    else if(typeof url === 'string') {
+      return url;
+    }
+    return this.monitorService.noIntervalId(url);
+  }
+
+
+  @Post('url')
+  addUrl(
+    @Body() addUrl: AddUrlRequest 
   ) {
-    const { url, label, frequency } = subscribeToUrl;
-    return this.monitorService.subscribeToUrl({ url, label, frequency }); 
+    const { url, label, frequency } = addUrl;
+    return this.urlWrapper(this.monitorService.addUrl({ url, label, frequency }));
   }
 
-  @Post('subscribe-help')
-  subscribeToUrlHelp() {
-    return this.monitorService.subscribeToUrlHelper();
+  @Post('url-help')
+  addUrlHelp() {
+    return this.monitorService.addUrlHelp();
   }
 
-  @Post('subscribe-list')
-  subscribeToUrlList(
-    @Body() urls: SubscribeToUrl[]
+  @Post('url-list')
+  addUrlList(
+    @Body() urls: AddUrlRequest[]
   ) {
-    return this.monitorService.subscribeToUrlList(urls);
+    return this.monitorService.addUrlList(urls).map((u) =>this.urlWrapper(u));
   }
 
-  @Post('subscribe-list-help')
-  subscribeToUrlListHelp() {
-    return this.monitorService.subscribeToUrlListHelper();
+  @Post('url-list-help')
+  addUrlListHelp() {
+    return this.monitorService.addUrlListHelp();
   }
 
-  @Delete('unsubscribe')
-  unsubscribeFromUrl(@Body() url: string) {
-    return this.monitorService.unsubscribeFromUrl(url);
+  @Delete()
+  removeUrl(@Body('url') url: string) { 
+    return this.urlWrapper(this.monitorService.removeUrl(url));
   }
 
-  @Delete('unsubscribe-list')
-  unsubscribeFromUrlList(@Body() urls: string[]) {
-    return this.monitorService.unsubscribeFromUrlList(urls);
+  @Delete('list')
+  removeUrlList(@Body('urls') urls: string[]) {
+    return this.monitorService.removeUrlList(urls).map((u) =>this.urlWrapper(u));
   }
 
-  @Delete('unsubscribe-tags')
-  unsubscribeToTags(@Body() tags: string[]) {
-    return this.monitorService.unsubscribeToTags(tags);
+  @Delete('tags')
+  removeUrlsByTags(@Body() tags: string[]) {
+    return this.monitorService.removeUrlsByTags(tags).map((u) =>this.urlWrapper(u));
   }
 
-  @Get('all-subscriptions')
-  getAllSubscriptions() {
-    return this.monitorService.getAllSubscriptions();
+  @Get('all-urls')
+  getAllUrls() {
+    return this.monitorService.getAllUrls().map((u) =>this.urlWrapper(u));
   }
 
   @Get('urls/active')
   getActiveUrls() {
-    return this.monitorService.getActiveUrls();
+    return this.monitorService.getActiveUrls().map((u) =>this.urlWrapper(u));
   }
 
   @Get('urls/inactive')
   getInactiveUrls() {
-    return this.monitorService.getInactiveUrls();
+    return this.monitorService.getInactiveUrls().map((u) =>this.urlWrapper(u));
   }
 
   @Get('urls/activity-history/:label')
-  getActivityHistory(@Param('label') label: string) {
-    return this.monitorService.getActivityHistory(label);
+  getActivityHistoryForLabel(@Param('label') label: string) {
+    return this.monitorService.getActivityHistoryForLabel(label);
   }
-
 }
