@@ -59,12 +59,12 @@ export class MonitorService {
   }
 
   //TODO: It will also send a notification to the user (email, sms, etc) about the subscription
-  addUrl({ url, label, frequency = 1 }: CreateUrlDto): Url | string {
+  addUrl({ url, label, frequency = 1, tags = [] }: CreateUrlDto): Url | string {
     console.log('addUrl');
     const foundToProceed = this.toProceed.some((urlObj) => urlObj.url === url);
     const foundInProcess = this.inProcess.some((urlObj) => urlObj.url === url);
     if(!foundToProceed && !foundInProcess) {
-      const newUrl = new Url(label, url, [], true, frequency, []);
+      const newUrl = new Url(label, url, tags, true, frequency, []);
       this.toProceed.push(newUrl);
       console.log('newUrl:', newUrl);
       return newUrl;
