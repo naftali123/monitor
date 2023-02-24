@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseArrayPipe, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { CreateUrlDto } from 'src/dtos/createUrl.dto';
 import { Url } from 'src/url/url.model';
 import { MonitorService } from './monitor.service';
-import { AddUrlRequest } from './types';
 
 @Controller('monitor')
 export class MonitorController {
@@ -22,11 +22,11 @@ export class MonitorController {
 
 
   @Post('url')
+  @UsePipes(ValidationPipe)
   addUrl(
-    @Body() addUrl: AddUrlRequest 
+    @Body() createUrlDto: CreateUrlDto
   ) {
-    const { url, label, frequency } = addUrl;
-    return this.urlWrapper(this.monitorService.addUrl({ url, label, frequency }));
+    return this.urlWrapper(this.monitorService.addUrl(createUrlDto));
   }
 
   @Post('url-help')
@@ -35,8 +35,10 @@ export class MonitorController {
   }
 
   @Post('url-list')
+  @UsePipes(ValidationPipe)
   addUrlList(
-    @Body() urls: AddUrlRequest[]
+    @Body(new ParseArrayPipe({ items: CreateUrlDto }))
+    urls: CreateUrlDto[],
   ) {
     return this.monitorService.addUrlList(urls).map((u) =>this.urlWrapper(u));
   }

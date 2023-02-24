@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { cloneDeep, remove } from 'lodash';
 import { ActivityHistory } from '../url/activityHistory.model';
 import { Url } from '../url/url.model';
-import { AddUrlRequest } from './types';
 import { UrlCheckerService } from 'src/url/url-checker.service';
 import { Second } from 'src/constants';
+import { CreateUrlDto } from 'src/dtos/createUrl.dto';
 // This module is responsible for monitoring list of urls
 // The urls is storing in the module
 // The format of the store is as specified in url.model.ts 
@@ -59,7 +59,7 @@ export class MonitorService {
   }
 
   //TODO: It will also send a notification to the user (email, sms, etc) about the subscription
-  addUrl({ url, label, frequency = 1 }: AddUrlRequest): Url | string {
+  addUrl({ url, label, frequency = 1 }: CreateUrlDto): Url | string {
     console.log('addUrl');
     const foundToProceed = this.toProceed.some((urlObj) => urlObj.url === url);
     const foundInProcess = this.inProcess.some((urlObj) => urlObj.url === url);
@@ -85,9 +85,9 @@ export class MonitorService {
     ;
   }
   // This method will be called when the user is subscribing to the list of urls
-  addUrlList(urls: AddUrlRequest[]): (Url | string)[] {
+  addUrlList(createUrlsDto: CreateUrlDto[]): (Url | string)[] {
     console.log('subscribeToUrlList');
-    return urls.map((url) => this.addUrl(url));
+    return createUrlsDto.map((url) => this.addUrl(url));
   }
 
   addUrlListHelp(): string {
