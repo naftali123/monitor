@@ -63,9 +63,9 @@ export class MonitorController {
     return this.monitorService.removeUrlsByTags(tags).map((u) =>this.urlWrapper(u));
   }
 
-  @Get('all-urls')
-  getAllUrls() {
-    return this.monitorService.getAllUrls().map((u) =>this.urlWrapper(u));
+  @Get('all-urls/:limit')
+  getAllUrls(@Param('limit') limit: number) {
+    return this.monitorService.getAllUrls(limit).map((u) =>this.urlWrapper(u));
   }
 
   @Get('urls/active')
@@ -78,8 +78,8 @@ export class MonitorController {
     return this.monitorService.getInactiveUrls().map((u) =>this.urlWrapper(u));
   }
 
-  @Get('urls/activity-history/:label')
-  getActivityHistoryForLabel(@Param('label') label: string) {
-    return this.monitorService.getActivityHistoryForLabel(label);
+  @Get('urls/activity-history/:label/:limit')
+  getActivityHistoryForLabel(@Param('label') label: string, @Param('limit') limit: number) {
+    return this.monitorService.getActivityHistoryForLabel(label, limit);
   }
 }

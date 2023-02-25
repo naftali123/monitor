@@ -33,9 +33,9 @@ export class MonitorService {
     return {...url, intervalId: undefined};
   }
 
-  getAllUrls(): Url[] {
+  getAllUrls(limit: number): Url[] {
     console.log('getSubscriptions');
-    return cloneDeep(this.urls());
+    return cloneDeep(this.urls()).reverse().slice(0, limit);
   }
 
   getActiveUrls(): Url[] {
@@ -48,14 +48,18 @@ export class MonitorService {
     return cloneDeep(this.urls().filter((url) => !url.active));
   }
 
-  getActivityHistoryForLabel(label: string): ActivityHistory[] {
+  getActivityHistoryForLabel(label: string, limit?: number): ActivityHistory[] {
     console.log('getActivityHistoryForLabel');
     const urls = this.urls();
     const index = urls.findIndex((urlObj) => urlObj.label === label);
     if(index === -1) {
       return [];
     }
-    return cloneDeep(urls[index].activityHistory);
+    const activityHistory = urls[index].activityHistory;
+    if(limit) {
+      return activityHistory.slice(0, limit);
+    }
+    return activityHistory;
   }
 
   //TODO: It will also send a notification to the user (email, sms, etc) about the subscription
