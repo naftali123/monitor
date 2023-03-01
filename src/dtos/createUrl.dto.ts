@@ -1,6 +1,6 @@
 import { Optional } from '@nestjs/common';
 import { Type } from 'class-transformer';
-import { IsString, IsNumber, IsArray, IsPositive, IsNotEmpty, IsUrl, ValidateNested } from 'class-validator';
+import { IsString, IsNumber, IsArray, IsPositive, IsNotEmpty, IsUrl, ValidateNested, IsOptional } from 'class-validator';
 
 export class CreateUrlDto {
     @IsString()
@@ -12,11 +12,18 @@ export class CreateUrlDto {
     @IsNotEmpty()
     label: string;
     
+    @IsOptional()
     @IsNumber()
     @IsPositive()
-    frequency: number;
-    
-    @Optional()
+    interval: number;
+
+    @IsOptional()
+    @IsNumber()
+    @IsPositive()
+    threshold: number;
+
+    @IsOptional()
+    @IsArray()
     @IsString({ each: true })
-    tags: string[];
+    tags?: string[];
 }

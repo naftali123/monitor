@@ -43,7 +43,7 @@ export class UrlCheckerService {
         url.intervalId = setInterval(async () => {
             await this.checkUrlAndUpdate(url);
             this.eventEmitter.emit('activityHistory.updated',url);
-        }, url.frequency * Second);
+        }, url.interval * Second);
     }
 
     stopMonitoring(url: Url): void {

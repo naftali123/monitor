@@ -40,7 +40,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, 
     // register events to be listened
     this.eventEmitter.on('activityHistory.updated', (url) => {
       console.log('activityHistory.updated');
-      this.server.emit('activityHistory.updated', url.activityHistory[url.activityHistory.length - 1]);
+      this.server.emit(`activityHistory.${url.label}.updated`, url.activityHistory[url.activityHistory.length - 1]);
     });
   }
 
@@ -68,10 +68,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, 
     return response;
   }
 
-  @OnEvent('activityHistory.updated')
-  handleActivityHistoryUpdated(url: any): void {
-    console.log('handleActivityHistoryUpdated');
-  }
+  // @OnEvent('activityHistory.updated')
+  // handleActivityHistoryUpdated(url: any): void {
+  //   console.log('handleActivityHistoryUpdated');
+  // }
  
   @SubscribeMessage('identity')
   async identity(@MessageBody() data: number): Promise<number> {

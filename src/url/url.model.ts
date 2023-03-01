@@ -7,7 +7,8 @@ export class Url {
         public url: string,
         public tags: string[],
         public active: boolean,
-        public frequency: number,
+        public interval: number,
+        public threshold: number,
         public activityHistory: ActivityHistory[],
         public intervalId?: NodeJS.Timeout
     ) {

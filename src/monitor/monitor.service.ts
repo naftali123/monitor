@@ -63,12 +63,12 @@ export class MonitorService {
   }
 
   //TODO: It will also send a notification to the user (email, sms, etc) about the subscription
-  addUrl({ url, label, frequency = 1, tags = [] }: CreateUrlDto): Url | string {
+  addUrl({ url, label, interval = 1, threshold = 1500, tags = [] }: CreateUrlDto): Url | string {
     console.log('addUrl');
     const foundToProceed = this.toProceed.some((urlObj) => urlObj.url === url);
     const foundInProcess = this.inProcess.some((urlObj) => urlObj.url === url);
     if(!foundToProceed && !foundInProcess) {
-      const newUrl = new Url(label, url, tags, true, frequency, []);
+      const newUrl = new Url(label, url, tags, true, interval, threshold, []);
       this.toProceed.push(newUrl);
       console.log('newUrl:', newUrl);
       return newUrl;
@@ -84,7 +84,7 @@ export class MonitorService {
       'the argument is: \n' +
       'url: string - the url to subscribe to \n' +
       'label: string - the label of the url \n' +
-      'frequency: number - the frequency of the url checking \n' +
+      'interval: number - the interval of the url checking \n' +
       'tags: string[] - the tags of the url (optional), can be use for grouping urls \n'
     ;
   }
@@ -103,7 +103,7 @@ export class MonitorService {
       'SubscribeToUrl: \n' +
       'url: string - the url to subscribe to \n' +
       'label: string - the label of the url \n' +
-      'frequency: number - the frequency of the url checking \n' +
+      'interval: number - the interval of the url checking \n' +
       'tags: string[] - the tags of the url (optional), can be use for grouping urls \n'
     ;
   }
