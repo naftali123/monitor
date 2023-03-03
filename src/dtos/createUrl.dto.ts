@@ -1,5 +1,3 @@
-import { Optional } from '@nestjs/common';
-import { Type } from 'class-transformer';
 import { IsString, IsNumber, IsArray, IsPositive, IsNotEmpty, IsUrl, ValidateNested, IsOptional } from 'class-validator';
 
 export class CreateUrlDto {
