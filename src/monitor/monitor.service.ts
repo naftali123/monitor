@@ -4,7 +4,7 @@ import { ActivityHistory } from '../url/activityHistory.model';
 import { Url } from '../url/url.model';
 import { UrlCheckerService } from 'src/url/url-checker.service';
 import { Second } from 'src/constants';
-import { CreateUrlDto } from 'src/dtos/createUrl.dto';
+import { CreateUrlDto } from 'src/monitor/dtos/createUrl.dto';
 // This module is responsible for monitoring list of urls
 // The urls is storing in the module
 // The format of the store is as specified in url.model.ts 

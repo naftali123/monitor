@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseArrayPipe, Post, UsePipes, ValidationPipe } from '@nestjs/common';
-import { CreateUrlDto } from 'src/dtos/createUrl.dto';
+import { CreateUrlDto } from 'src/monitor/dtos/createUrl.dto';
 import { Url } from 'src/url/url.model';
 import { MonitorService } from './monitor.service';
 

@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { EventsModule } from './events/events.module';
 import { MonitorModule } from './monitor/monitor.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,7 +26,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       ignoreErrors: false,
     }),
     MonitorModule,
-    EventsModule
+    EventsModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
