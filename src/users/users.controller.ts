@@ -12,7 +12,7 @@ import { User } from "./models/user.model";
 import { UsersService } from "./users.service";
 import { LocalAuthGuard } from "src/auth/guards/local-auth.guard";
 import { AuthService } from "src/auth/auth.service";
-// 
+
 const baseUrlReplacer = (url: string): string => url.replace('/users', '');
 
 @Controller(API.USER.CONTROLLER)
