@@ -27,7 +27,7 @@ export class UsersController {
     @UsePipes(ValidationPipe)
     async signUp(@Body() createUserDto: CreateUserDto): Promise<{ access_token: string; }> {
         const user = await this.usersService.createUser(createUserDto);
-        return this.authService.login(user);
+        return this.authService.getTokens({ email: user.email, sub: user.id });
     }
     
     @UseGuards(LocalAuthGuard)
@@ -35,7 +35,7 @@ export class UsersController {
     @UsePipes(ValidationPipe)
     async signIn(@Request() req, @Body() { email, password }: SignInDto) {
         // return connected response
-        return this.authService.login(req.user);
+        return this.authService.getTokens({ email, sub: req.user.id });
     }
 
     // SIGN_OUT

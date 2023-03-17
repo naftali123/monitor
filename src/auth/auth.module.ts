@@ -2,7 +2,11 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './strategies/local.strategy';
+import { 
+  AccessTokenStrategy, 
+  RefreshTokenStrategy, 
+  LocalStrategy 
+} from './strategies';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
@@ -13,10 +17,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const secret = configService.get('jwtSecret');
         return {
           expiresIn: '60s',
-          secret
+          secret: configService.get('ACCESS_TOKEN_SECRET')
         };
       },
       inject: [ConfigService]
@@ -25,7 +28,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   providers: [
     AuthService, 
-    LocalStrategy
+    LocalStrategy,
+    AccessTokenStrategy,
+    RefreshTokenStrategy
   ],
   exports: [AuthService],
 })

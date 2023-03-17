@@ -5,6 +5,7 @@ import { plainToClass } from 'class-transformer';
 import { User } from 'src/users/models/user.model';
 import { UserResponse } from 'src/users/models/userResponse.model';
 import { UsersService } from '../users/users.service';
+import { JwtPayload } from './types';
 
 @Injectable()
 export class AuthService {
@@ -29,12 +30,25 @@ export class AuthService {
     throw new NotFoundException('User not found');
   }
 
-  async login(user: User) {
-    return { 
-      access_token: this.jwtService.sign(
-        { username: user.email, sub: user.id }, 
-        { secret: this.configService.get('jwtSecret')}
-      )
+  private getToken({ 
+    jwtPayload, 
+    expiresIn, 
+    type 
+  }: { 
+    jwtPayload: JwtPayload, 
+    expiresIn?: string | number | undefined, 
+    type: 'ACCESS' | 'REFRESH' 
+  }): string {
+    return this.jwtService.sign(
+      jwtPayload, 
+      { expiresIn, secret: this.configService.get(`${type}_TOKEN_SECRET`) }
+    );
+  }
+
+  async getTokens(jwtPayload: JwtPayload) {
+    return {
+      access_token: this.getToken({ jwtPayload, expiresIn: '15m', type: 'ACCESS' }),
+      refresh_token: this.getToken({ jwtPayload, expiresIn: '7d', type: 'REFRESH' })
     };
   }
 }
