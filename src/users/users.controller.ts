@@ -1,22 +1,18 @@
 import { 
     Request, 
-    ClassSerializerInterceptor, 
-    // NotFoundException, 
-    // UnauthorizedException, 
+    ClassSerializerInterceptor,
     ValidationPipe 
 } from "@nestjs/common";
 import { Body, Get, Post, UseGuards, UseInterceptors, UsePipes } from "@nestjs/common/decorators";
 import { Controller } from "@nestjs/common/decorators/core/controller.decorator";
-// import { plainToClass } from "class-transformer";
 import { API } from "./config";
 import { CreateUserDto } from "./dtos/createUser.dto";
 import { SignInDto } from "./dtos/signIn.dto";
 import { User } from "./models/user.model";
 import { UsersService } from "./users.service";
-import { UserResponse } from "./models/userResponse.model";
-import { LocalAuthGuard } from "src/auth/local-auth.guard";
+import { LocalAuthGuard } from "src/auth/guards/local-auth.guard";
 import { AuthService } from "src/auth/auth.service";
-
+// 
 const baseUrlReplacer = (url: string): string => url.replace('/users', '');
 
 @Controller(API.USER.CONTROLLER)
