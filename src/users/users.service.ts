@@ -28,7 +28,7 @@ export class UsersService {
             this.users.push(user);
             return cloneDeep(user);
         }
-        return null;
+        return user;
     }
 
     async findUserByEmail(email: string): Promise<User> {

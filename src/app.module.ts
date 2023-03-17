@@ -6,6 +6,8 @@ import { MonitorModule } from './monitor/monitor.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
@@ -24,6 +26,12 @@ import { AuthModule } from './auth/auth.module';
       verboseMemoryLeak: true,
       // disable throwing uncaughtException if an error event is emitted and it has no listeners
       ignoreErrors: false,
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      // ignoreEnvFile: true,
+      envFilePath: '.env',
+      load: [configuration],
     }),
     MonitorModule,
     EventsModule,

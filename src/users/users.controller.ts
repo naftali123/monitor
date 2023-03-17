@@ -1,7 +1,13 @@
-import { Request, ClassSerializerInterceptor, NotFoundException, UnauthorizedException, ValidationPipe } from "@nestjs/common";
+import { 
+    Request, 
+    ClassSerializerInterceptor, 
+    // NotFoundException, 
+    // UnauthorizedException, 
+    ValidationPipe 
+} from "@nestjs/common";
 import { Body, Get, Post, UseGuards, UseInterceptors, UsePipes } from "@nestjs/common/decorators";
 import { Controller } from "@nestjs/common/decorators/core/controller.decorator";
-import { plainToClass } from "class-transformer";
+// import { plainToClass } from "class-transformer";
 import { API } from "./config";
 import { CreateUserDto } from "./dtos/createUser.dto";
 import { SignInDto } from "./dtos/signIn.dto";
@@ -9,21 +15,23 @@ import { User } from "./models/user.model";
 import { UsersService } from "./users.service";
 import { UserResponse } from "./models/userResponse.model";
 import { LocalAuthGuard } from "src/auth/local-auth.guard";
+import { AuthService } from "src/auth/auth.service";
 
 const baseUrlReplacer = (url: string): string => url.replace('/users', '');
 
 @Controller(API.USER.CONTROLLER)
 export class UsersController {
     constructor(
-        private readonly usersService: UsersService
+        private readonly usersService: UsersService,
+        private readonly authService: AuthService,
     ) {}
 
     @UseInterceptors(ClassSerializerInterceptor)
     @Post(baseUrlReplacer(API.USER.SIGN_UP))
     @UsePipes(ValidationPipe)
-    async signUp(@Body() createUserDto: CreateUserDto): Promise<UserResponse> {
+    async signUp(@Body() createUserDto: CreateUserDto): Promise<{ access_token: string; }> {
         const user = await this.usersService.createUser(createUserDto);
-        return user;
+        return this.authService.login(user);
     }
     
     @UseGuards(LocalAuthGuard)
@@ -31,7 +39,7 @@ export class UsersController {
     @UsePipes(ValidationPipe)
     async signIn(@Request() req, @Body() { email, password }: SignInDto) {
         // return connected response
-        return req.user;
+        return this.authService.login(req.user);
     }
 
     // SIGN_OUT
