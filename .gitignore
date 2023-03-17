@@ -39,3 +39,4 @@ lerna-debug.log*
 # *.yml
 # *.yaml
 *.env
+.env.*
