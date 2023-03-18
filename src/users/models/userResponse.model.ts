@@ -6,7 +6,7 @@ export class UserResponse extends User {
     @Exclude()
     password: string;
     
-    @Exclude()
+    @Expose()
     id: string;
 
     @Expose()
