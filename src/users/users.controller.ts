@@ -10,7 +10,7 @@ import { CreateUserDto } from "./dtos/createUser.dto";
 import { SignInDto } from "./dtos/signIn.dto";
 import { User } from "./models/user.model";
 import { UsersService } from "./users.service";
-import { LocalAuthGuard } from "src/auth/guards/local-auth.guard";
+import { LocalAuthGuard } from "src/auth/guards/local/local-auth.guard";
 import { AuthService } from "src/auth/auth.service";
 
 const baseUrlReplacer = (url: string): string => url.replace('/users', '');
