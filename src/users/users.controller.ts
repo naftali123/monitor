@@ -7,7 +7,7 @@ import { Body, Get, Post, UseGuards, UseInterceptors, UsePipes } from "@nestjs/c
 import { Controller } from "@nestjs/common/decorators/core/controller.decorator";
 import { API } from "./config";
 import { CreateUserDto } from "./dtos/createUser.dto";
-import { SignInDto } from "./dtos/signIn.dto";
+import { LoginDto } from "./dtos/login.dto";
 import { User } from "./models/user.model";
 import { UsersService } from "./users.service";
 import { LocalAuthGuard } from "src/auth/guards/local/local-auth.guard";
@@ -33,7 +33,7 @@ export class UsersController {
     @UseGuards(LocalAuthGuard)
     @Post(baseUrlReplacer(API.USER.LOG_IN))
     @UsePipes(ValidationPipe)
-    async signIn(@Request() req, @Body() { email, password }: SignInDto) {
+    async signIn(@Request() req, @Body() { email, password }: LoginDto) {
         // return connected response
         return this.authService.getTokens({ email, sub: req.user.id });
     }
