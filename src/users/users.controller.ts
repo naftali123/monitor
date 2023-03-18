@@ -3,7 +3,7 @@ import {
     ClassSerializerInterceptor,
     ValidationPipe 
 } from "@nestjs/common";
-import { Body, Get, Post, UseGuards, UseInterceptors, UsePipes } from "@nestjs/common/decorators";
+import { Body, Get, Post, UseInterceptors, UsePipes } from "@nestjs/common/decorators";
 import { Controller } from "@nestjs/common/decorators/core/controller.decorator";
 import { API } from "./config";
 import { CreateUserDto } from "./dtos/createUser.dto";
