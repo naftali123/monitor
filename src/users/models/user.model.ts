@@ -9,7 +9,22 @@ export class User {
         public email: string,
         public phone: string,
         public password: string,
-        public id: string
+        public id: string,
+
+        public refreshToken?: string,
+
+        // public createdAt: Date | string = new Date(),
+        // public lastLogin: Date | string = new Date(),
+        // public deletedAt: Date | string = new Date(),
+
+        // public isDeleted?: boolean,
+        // public isVerified?: boolean,
+
+        // public verificationCode?: string,
+        // public verificationCodeExpires?: Date | string,
+
+        // public resetPasswordToken?: string,
+        // public resetPasswordExpires?: Date | string,
     ) {}
 
     static async fromCreateUserDto(createUserDto: CreateUserDto): Promise<User> {
