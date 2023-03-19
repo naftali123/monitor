@@ -1,14 +1,16 @@
 import { 
+    Request, 
     ClassSerializerInterceptor,
     ValidationPipe 
 } from "@nestjs/common";
-import { Body, Get, Post, UseInterceptors, UsePipes } from "@nestjs/common/decorators";
+import { Body, Get, Post, UseGuards, UseInterceptors, UsePipes } from "@nestjs/common/decorators";
 import { Controller } from "@nestjs/common/decorators/core/controller.decorator";
 import { API } from "./config";
 import { CreateUserDto } from "./dtos/createUser.dto";
 import { LoginDto } from "./dtos/login.dto";
 import { User } from "./models/user.model";
 import { UsersService } from "./users.service";
+import { LocalAuthGuard } from "src/auth/guards/local/local-auth.guard";
 import { AuthService } from "src/auth/auth.service";
 
 const baseUrlReplacer = (url: string): string => url.replace('/users', '');
@@ -28,11 +30,18 @@ export class UsersController {
         return this.authService.getTokens({ email: user.email, sub: user.id });
     }
     
+    @UseGuards(LocalAuthGuard)
     @Post(baseUrlReplacer(API.USER.LOGIN))
     @UsePipes(ValidationPipe)
-    async signIn(@Body() { email, password }: LoginDto) {
-        const user = await this.authService.validate(email, password);
-        return this.authService.getTokens({ email, sub: user.id });
+    async signIn(
+        @Request() req, 
+        @Body() { 
+            email, 
+            // password 
+        }: LoginDto
+    ) {
+        // const user = await this.authService.validate(email, password);
+        return this.authService.getTokens({ email, sub: req.user.id });
     }
 
     // SIGN_OUT
