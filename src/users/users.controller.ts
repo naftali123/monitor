@@ -16,9 +16,7 @@ const baseUrlReplacer = (url: string): string => url.replace('/users', '');
 
 @Controller(API.USER.CONTROLLER)
 export class UsersController {
-    constructor(
-        private readonly usersService: UsersService,
-    ) {}
+    constructor(private readonly usersService: UsersService) {}
 
     @UseInterceptors(ClassSerializerInterceptor)
     @Post(baseUrlReplacer(API.USER.LOCAL_SIGNUP))
