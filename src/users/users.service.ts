@@ -25,8 +25,8 @@ export class UsersService {
         const user: User = await User.fromCreateUserDto(createUserDto);
         const isUserExists: boolean = await this.checkIsUserExists(user.email);
         const tokens = await this.getTokens({ email: user.email, sub: user.id });
-        await this.updateRefreshToken(user.id, tokens.refresh_token);
         if(!isUserExists) await this.insertUser(user);
+        await this.updateRefreshToken(user.id, tokens.refresh_token);
         return tokens;
     }
 
