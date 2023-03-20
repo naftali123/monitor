@@ -55,6 +55,7 @@ export class UsersService {
         user.hashedRefreshToken = await User.hashRefreshToken(refreshToken);
     }
 
+    // ======================== auth operations ========================
     async refreshTokens(userId: string, refreshToken: string): Promise<Tokens> {
         const user: User = await this.findUserById(userId);
         if (user) {
@@ -84,6 +85,7 @@ export class UsersService {
         throw new NotFoundException('User not found');
     }
 
+    // ======================== helpers ========================
     private getToken({
         jwtPayload,
         expiresIn,
