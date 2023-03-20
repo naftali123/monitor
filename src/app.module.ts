@@ -5,7 +5,7 @@ import { EventsModule } from './events/events.module';
 import { MonitorModule } from './monitor/monitor.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './users/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 

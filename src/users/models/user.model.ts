@@ -11,7 +11,7 @@ export class User {
         public password: string,
         public id: string,
 
-        public refreshToken?: string,
+        public hashedRefreshToken?: string,
 
         // public createdAt: Date | string = new Date(),
         // public lastLogin: Date | string = new Date(),
@@ -33,12 +33,25 @@ export class User {
             createUserDto.lname,
             createUserDto.email,
             createUserDto.phone,
-            await hash(createUserDto.password, 10),
+            await User.hashPassword(createUserDto.password),
             randomUUID()
         );
+    }
+
+    static async hashPassword(password: string): Promise<string> {
+        return await hash(password, 10);
     }
 
     async comparePassword(password: string): Promise<boolean> {
         return await compare(password, this.password);
     }
+
+    static async hashRefreshToken(refreshToken: string): Promise<string> {
+        return await hash(refreshToken, 10);
+    }
+
+    async compareRefreshToken(refreshToken: string): Promise<boolean> {
+        return await compare(refreshToken, this.hashedRefreshToken);
+    }
+    
 }

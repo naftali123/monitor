@@ -1,8 +1,4 @@
-import { 
-    Request, 
-    ClassSerializerInterceptor,
-    ValidationPipe 
-} from "@nestjs/common";
+import { Request, ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
 import { Body, Get, Post, UseGuards, UseInterceptors, UsePipes } from "@nestjs/common/decorators";
 import { Controller } from "@nestjs/common/decorators/core/controller.decorator";
 import { API } from "./config";
@@ -10,8 +6,11 @@ import { CreateUserDto } from "./dtos/createUser.dto";
 import { LoginDto } from "./dtos/login.dto";
 import { User } from "./models/user.model";
 import { UsersService } from "./users.service";
-import { LocalAuthGuard } from "src/auth/guards/local/local-auth.guard";
-import { AuthService } from "src/auth/auth.service";
+import { LocalAuthGuard } from "src/users/auth/guards/local/local-auth.guard";
+import { JwtAccessTokenGuard, RefreshTokenGuard } from "src/users/auth/guards";
+import { Tokens } from "src/users/auth/types";
+import { GetCurrentUserId } from "src/users/auth/decorators/get-current-user-id.decorator";
+import { GetCurrentUser } from "src/users/auth/decorators/get-current-user.decorator";
 
 const baseUrlReplacer = (url: string): string => url.replace('/users', '');
 
@@ -19,32 +18,39 @@ const baseUrlReplacer = (url: string): string => url.replace('/users', '');
 export class UsersController {
     constructor(
         private readonly usersService: UsersService,
-        private readonly authService: AuthService,
     ) {}
 
     @UseInterceptors(ClassSerializerInterceptor)
-    @Post(baseUrlReplacer(API.USER.SIGN_UP))
+    @Post(baseUrlReplacer(API.USER.LOCAL_SIGNUP))
     @UsePipes(ValidationPipe)
-    async signUp(@Body() createUserDto: CreateUserDto): Promise<{ access_token: string; }> {
-        const user = await this.usersService.createUser(createUserDto);
-        return this.authService.getTokens({ email: user.email, sub: user.id });
+    async signUp(@Body() createUserDto: CreateUserDto): Promise<Tokens> {
+        return await this.usersService.createUser(createUserDto)
     }
     
     @UseGuards(LocalAuthGuard)
-    @Post(baseUrlReplacer(API.USER.LOGIN))
+    @Post(baseUrlReplacer(API.USER.LOCAL_LOGIN))
     @UsePipes(ValidationPipe)
     async signIn(
         @Request() req, 
-        @Body() { 
-            email, 
-            // password 
-        }: LoginDto
-    ) {
-        // const user = await this.authService.validate(email, password);
-        return this.authService.getTokens({ email, sub: req.user.id });
+        @Body() { email }: LoginDto
+    ): Promise<Tokens> {
+        return await this.usersService.getTokens({ email, sub: req.user.id });
     }
 
-    // SIGN_OUT
+    @UseGuards(JwtAccessTokenGuard)
+    @Post(baseUrlReplacer(API.USER.LOGOUT))
+    async logoutUser(@Body() id: string): Promise<void> {
+        return await this.usersService.logoutUser(id);
+    }
+
+    @UseGuards(RefreshTokenGuard)
+    @Post(baseUrlReplacer(API.USER.REFRESH_TOKEN))
+    refreshTokens(
+        @GetCurrentUserId() userId: string,
+        @GetCurrentUser('refreshToken') refreshToken: string,
+    ): Promise<Tokens> {
+        return this.usersService.refreshTokens(userId, refreshToken);
+    }
 
     @Get(baseUrlReplacer(API.USER.GET_USER_BY_ID))
     async getUserById(@Body() id: string): Promise<User> {
