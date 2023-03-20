@@ -37,8 +37,8 @@ export class UsersController {
 
     @UseGuards(JwtAccessTokenGuard)
     @Post(baseUrlReplacer(API.USER.LOGOUT))
-    async logoutUser(@Body() id: string): Promise<void> {
-        return await this.usersService.logoutUser(id);
+    async logoutUser(@GetCurrentUserId() userId: string): Promise<void> {
+        return await this.usersService.logoutUser(userId);
     }
 
     @UseGuards(RefreshTokenGuard)
