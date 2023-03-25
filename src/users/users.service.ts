@@ -22,10 +22,12 @@ export class UsersService {
     }
 
     async createUser(createUserDto: CreateUserDto): Promise<Tokens> {
-        const user: User = await User.fromCreateUserDto(createUserDto);
-        const isUserExists: boolean = await this.checkIsUserExists(user.email);
+        let user: User = await this.findUserByEmail(createUserDto.email);
+        if(!user) {
+            user = await User.fromCreateUserDto(createUserDto);
+            await this.insertUser(user);
+        }
         const tokens = await this.getTokens({ email: user.email, sub: user.id });
-        if(!isUserExists) await this.insertUser(user);
         await this.updateRefreshToken(user.id, tokens.refresh_token);
         return tokens;
     }
@@ -46,13 +48,7 @@ export class UsersService {
 
     // ======================== jwt queries ========================
     async logoutUser(id: string): Promise<void> {
-        const user: User = await this.findUserById(id);
-        user.hashedRefreshToken = null;
-    }
-
-    async updateRefreshToken(id: string, refreshToken: string): Promise<void> {
-        const user: User = await this.findUserById(id);
-        user.hashedRefreshToken = await User.hashRefreshToken(refreshToken);
+        await this.removeRefreshToken(id);
     }
 
     // ======================== auth operations ========================
@@ -86,6 +82,16 @@ export class UsersService {
     }
 
     // ======================== helpers ========================
+    async updateRefreshToken(id: string, refreshToken: string): Promise<void> {
+        const user: User = await this.findUserById(id);
+        user.hashedRefreshToken = await User.hashRefreshToken(refreshToken);
+    }
+
+    async removeRefreshToken(id: string): Promise<void> {
+        const user: User = await this.findUserById(id);
+        user.hashedRefreshToken = null;
+    }
+
     private getToken({
         jwtPayload,
         expiresIn,
