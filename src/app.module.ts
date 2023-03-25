@@ -7,6 +7,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAccessTokenGuard } from './users/auth/guards';
 
 @Module({
   imports: [
@@ -37,6 +39,12 @@ import configuration from './config/configuration';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAccessTokenGuard,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}
